@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-AUDIO_PATH="/path/to/music/rain_sounds.m4a"
+AUDIO_PATH="/path/to/music/rain_sounds.mp3"
 ALARM_PATH="/path/to/music/alarm.mp3"
 
 WORK_MIN=1
