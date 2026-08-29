@@ -3,8 +3,8 @@
 AUDIO_PATH="/path/to/music/rain_sounds.mp3"
 ALARM_PATH="/path/to/music/alarm.mp3"
 
-WORK_MIN=1
-BREAK_MIN=1
+WORK_MIN=25
+BREAK_MIN=5
 SETS=5
 ALARM_DURATION=15
 
