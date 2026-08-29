@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-AUDIO_PATH="/home/ghost/Programming/rain_sounds.m4a"
-ALARM_PATH="/home/ghost/Programming/alarm.mp3"
+AUDIO_PATH="/path/to/music/rain_sounds.m4a"
+ALARM_PATH="/path/to/music/alarm.mp3"
 
 WORK_MIN=1
 BREAK_MIN=1
