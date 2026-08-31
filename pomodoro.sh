@@ -5,6 +5,12 @@ ALARM_PATH="/path/to/music/alarm.mp3"
 
 WORK_MIN=25
 BREAK_MIN=5
+
+AUDIO_PATH="/path/to/your/rain_sounds.mp3"
+ALARM_PATH="/path/to/your/alarm.mp3"
+
+WORK_MIN=50
+BREAK_MIN=10
 SETS=5
 ALARM_DURATION=15
 
@@ -17,6 +23,18 @@ stop_music() {
         kill "$AUDIO_PID" 2>/dev/null
         wait "$AUDIO_PID" 2>/dev/null
         AUDIO_PID=""
+    fi
+}
+
+pause_music() {
+    if [[ -n "$AUDIO_PID" ]]; then
+        kill -STOP "$AUDIO_PID" 2>/dev/null
+    fi
+}
+
+resume_music() {
+    if [[ -n "$AUDIO_PID" ]]; then
+        kill -CONT "$AUDIO_PID" 2>/dev/null
     fi
 }
 
@@ -79,14 +97,34 @@ countdown() {
     local duration=$1
     local mode=$2
     local set_idx=$3
+    local remaining=$duration
 
-    for ((remaining=duration; remaining>0; remaining--)); do
-        printf "\r[Set %d/%d] %-5s: %02d:%02d  [q:quit | r:reset set | a:reset all] " \
+    while (( remaining > 0 )); do
+        printf "\r[Set %d/%d] %-5s: %02d:%02d  [p:pause | q:quit | r:reset set | a:reset all] " \
             "$set_idx" "$SETS" "$mode" "$((remaining/60))" "$((remaining%60))"
 
         # Read 1 keypress with a 1-second timeout
         if read -r -s -t 1 -n 1 key; then
             case "$key" in
+                p|P)
+                    pause_music
+                    while true; do
+                        printf "\r[Set %d/%d] %-5s: %02d:%02d  [PAUSED - Press 'p' to resume | q:quit] " \
+                            "$set_idx" "$SETS" "$mode" "$((remaining/60))" "$((remaining%60))"
+                        
+                        if read -r -s -n 1 pause_key; then
+                            case "$pause_key" in
+                                p|P)
+                                    resume_music
+                                    break
+                                    ;;
+                                q|Q)
+                                    return 1
+                                    ;;
+                            esac
+                        fi
+                    done
+                    ;;
                 q|Q)
                     return 1
                     ;;
@@ -97,6 +135,8 @@ countdown() {
                     return 3
                     ;;
             esac
+        else
+            ((remaining--))
         fi
     done
 
@@ -150,3 +190,4 @@ done
 if (( current_set > SETS )); then
     printf "\nAll %d sets completed!\n" "$SETS"
 fi
+
